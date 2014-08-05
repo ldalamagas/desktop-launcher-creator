@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 import logging
 import argparse
 
@@ -14,6 +15,14 @@ def create_argument_parser():
     p.add_argument('--executable', help="Absolute path to the application executable")
     p.add_argument('--description', help="Application description, if not set it will be the application name")
     return p
+
+
+def print_instructions(file_name):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, file_name)
+    logger.info("Application launcher created at %s", file_path)
+    logger.info("Give it the appropriate permissions by issuing: chmod +x %s", file_path)
+    logger.info("Move it to the appropriate location by issuing: mv %s ~/.local/share/applications", file_path)
 
 
 def create_launcher():
@@ -37,6 +46,7 @@ def create_launcher():
         f.write("Icon=%s\n" % arguments.icon)
         f.write("Type=Application\n")
         f.write("Name[en_US]=%s\n" % arguments.name)
+    return file_name
 
 
 if __name__ == "__main__":
@@ -48,5 +58,5 @@ if __name__ == "__main__":
     logger.addHandler(stream_handler)
     argument_parser = create_argument_parser()
     arguments = argument_parser.parse_args()
-    create_launcher()
+    print_instructions(create_launcher())
     logger.info("Done")
