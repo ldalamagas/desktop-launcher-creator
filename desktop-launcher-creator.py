@@ -21,7 +21,6 @@ def print_instructions(file_name):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, file_name)
     logger.info("Application launcher created at %s", file_path)
-    logger.info("Give it the appropriate permissions by issuing: chmod +x %s", file_path)
     logger.info("Move it to the appropriate location by issuing: mv %s ~/.local/share/applications", file_path)
 
 
@@ -46,6 +45,8 @@ def create_launcher():
         f.write("Icon=%s\n" % arguments.icon)
         f.write("Type=Application\n")
         f.write("Name[en_US]=%s\n" % arguments.name)
+    logger.info("Making %s executable", file_name)
+    os.chmod(file_name, 0755)
     return file_name
 
 
