@@ -9,11 +9,11 @@ __author__ = 'lefteris'
 def create_argument_parser():
     logger.debug("Parsing Arguments")
     p = argparse.ArgumentParser(description="Desktop Launcher Creator")
-    p.add_argument('--name', help="The application name")
-    p.add_argument('--generic-name', help="The application generic name, if not set it will be the application name")
-    p.add_argument('--icon', help="Absolute path to the application icon")
-    p.add_argument('--executable', help="Absolute path to the application executable")
-    p.add_argument('--description', help="Application description, if not set it will be the application name")
+    p.add_argument('--name', '-n', help="The application name")
+    p.add_argument('--generic-name', '-g', help="The application generic name, if not set the application name will be used")
+    p.add_argument('--icon', '-i', help="Absolute path to the application icon")
+    p.add_argument('--executable', '-e', help="Absolute path to the application executable")
+    p.add_argument('--description', '-d', help="Application description, if not set it will be the application name")
     return p
 
 
