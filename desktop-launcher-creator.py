@@ -71,11 +71,18 @@ class MainWindow(Gtk.Window):
         self.main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         self.add(self.main_vbox)
 
-        self.entry_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        self.entry_grid = Gtk.Grid()
         self.button_hbox = Gtk.Box(spacing=6)
 
+        self.name_label = Gtk.Label("Name")
         self.name_entry = Gtk.Entry()
-        self.entry_vbox.pack_start(self.name_entry, True, True, 0)
+        self.entry_grid.attach(self.name_label, 0, 0, 1, 1)
+        self.entry_grid.attach(self.name_entry, 1, 0, 1, 1)
+
+        self.generic_name_label = Gtk.Label("Generic Name")
+        self.generic_name_entry = Gtk.Entry()
+        self.entry_grid.attach(self.generic_name_label, 0, 1, 1, 1)
+        self.entry_grid.attach(self.generic_name_entry, 1, 1, 1, 1)
 
         self.ok_button = Gtk.Button(label="OK")
         self.ok_button.connect("clicked", self.on_ok_button_clicked)
@@ -85,7 +92,7 @@ class MainWindow(Gtk.Window):
         self.exit_button.connect("clicked", self.on_exit_button_clicked)
         self.button_hbox.pack_start(self.exit_button, True, True, 0)
 
-        self.main_vbox.pack_start(self.entry_vbox, True, True, 0)
+        self.main_vbox.pack_start(self.entry_grid, True, True, 0)
         self.main_vbox.pack_start(self.button_hbox, True, True, 0)
 
         self.connect("delete-event", Gtk.main_quit)
