@@ -63,45 +63,36 @@ def initialize_logger():
     return _logger
 
 
-class MainWindow(Gtk.Window):
+def on_ok_button_clicked(button, event=None):
+    logger.info("Ok button clicked")
 
-    def __init__(self):
-        super().__init__(title="Desktop Launcher Creator")
 
-        self.main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-        self.add(self.main_vbox)
+def on_cancel_button_clicked(button, event=None):
+    logger.info("Cancel button clicked")
+    Gtk.main_quit()
 
-        self.entry_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-        self.button_hbox = Gtk.Box(spacing=6)
 
-        self.name_entry = Gtk.Entry()
-        self.entry_vbox.pack_start(self.name_entry, True, True, 0)
+def on_executable_selected(button, event=None):
+    logger.info("Executable selected")
 
-        self.ok_button = Gtk.Button(label="OK")
-        self.ok_button.connect("clicked", self.on_ok_button_clicked)
-        self.button_hbox.pack_start(self.ok_button, True, True, 0)
 
-        self.exit_button = Gtk.Button(label="Cancel")
-        self.exit_button.connect("clicked", self.on_exit_button_clicked)
-        self.button_hbox.pack_start(self.exit_button, True, True, 0)
-
-        self.main_vbox.pack_start(self.entry_vbox, True, True, 0)
-        self.main_vbox.pack_start(self.button_hbox, True, True, 0)
-
-        self.connect("delete-event", Gtk.main_quit)
-
-    @staticmethod
-    def on_ok_button_clicked(_):
-        logger.info("Ok button clicked")
-
-    @staticmethod
-    def on_exit_button_clicked(_):
-        logger.info("Exit button clicked")
-        Gtk.main_quit()
+def on_icon_selected(button, event=None):
+    logger.info("Icon selected")
 
 
 def initialize_window():
-    win = MainWindow()
+
+    handlers = {
+        "on_ok_button_clicked": on_ok_button_clicked,
+        "on_cancel_button_clicked": on_cancel_button_clicked,
+        "on_executable_selected": on_executable_selected,
+        "on_icon_selected": on_icon_selected
+    }
+
+    builder = Gtk.Builder()
+    builder.add_from_file("gui.glade")
+    builder.connect_signals(handlers)
+    win = builder.get_object("mainWindow")
     win.show_all()
     Gtk.main()
 
