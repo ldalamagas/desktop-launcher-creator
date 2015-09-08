@@ -2,20 +2,20 @@
 import os
 import logging
 import argparse
-from gi.repository import Gtk
 
 __author__ = 'lefteris'
 
 
 def create_argument_parser():
-    logger.debug("Parsing Arguments")
     p = argparse.ArgumentParser(description="Desktop Launcher Creator")
     p.add_argument('--name', '-n', help="The application name")
-    p.add_argument('--generic-name', '-g',
-                   help="The application generic name, if not set the application name will be used")
+    p.add_argument('--generic-name', help="The application generic name, if not set the application name will be used")
     p.add_argument('--icon', '-i', help="Absolute path to the application icon")
     p.add_argument('--executable', '-e', help="Absolute path to the application executable")
-    p.add_argument('--description', '-d', help="Application description, if not set it will be the application name")
+    p.add_argument('--comment', '-c', help="Application description, if not set it will be the application name")
+    p.add_argument('--debug',  help="Enable debugging features", action="store_true")
+    p.add_argument('--gui', "-g", dest="gui",  help="Enable graphical user interface", action="store_true")
+    p.set_defaults(gui=False)
     return p
 
 
@@ -27,10 +27,11 @@ def print_instructions(file_name):
 
 
 def create_launcher(name, generic_name, comment, icon, executable):
-    logger.info("Creating desktop launcher")
     if not (name and executable and icon):
-        # argument_parser.print_help()
+        argument_parser.print_help()
         exit(1)
+
+    logger.info("Creating desktop launcher")
 
     if generic_name is None:
         generic_name = name
@@ -55,7 +56,12 @@ def create_launcher(name, generic_name, comment, icon, executable):
 
 def initialize_logger():
     _logger = logging.getLogger("desktop-launcher-creator")
-    _logger.setLevel(logging.INFO)
+
+    if arguments.debug:
+        _logger.setLevel(logging.DEBUG)
+    else:
+        _logger.setLevel(logging.INFO)
+
     formatter = logging.Formatter("%(levelname)s: %(message)s")
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(fmt=formatter)
@@ -63,21 +69,22 @@ def initialize_logger():
     return _logger
 
 
-def on_ok_button_clicked(button, event=None):
-    logger.info("Ok button clicked")
+def on_ok_button_clicked(_):
+    logger.debug("Ok button clicked")
 
 
-def on_cancel_button_clicked(button, event=None):
-    logger.info("Cancel button clicked")
+def on_cancel_button_clicked(_, event=None):
+    _ = event   # Avoid IDE warning
+    logger.debug("Cancel button clicked")
     Gtk.main_quit()
 
 
-def on_executable_selected(button, event=None):
-    logger.info("Executable selected")
+def on_executable_selected(_):
+    logger.debug("Executable selected")
 
 
-def on_icon_selected(button, event=None):
-    logger.info("Icon selected")
+def on_icon_selected(_):
+    logger.debug("Icon selected")
 
 
 def initialize_window():
@@ -97,8 +104,17 @@ def initialize_window():
     Gtk.main()
 
 if __name__ == "__main__":
+    argument_parser = create_argument_parser()
+    arguments = argument_parser.parse_args()
     logger = initialize_logger()
-    initialize_window()
+    if arguments.gui:
+        from gi.repository import Gtk
+        logger.debug("Graphical user interface enabled")
+        initialize_window()
+    else:
+        logger.debug("Command line interface enabled")
+        print_instructions(create_launcher(arguments.name, arguments.generic_name,
+                                           arguments.comment, arguments.icon, arguments.executable))
     # argument_parser = create_argument_parser()
     # arguments = argument_parser.parse_args()
     # print_instructions(create_launcher())
